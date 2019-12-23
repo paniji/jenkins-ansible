@@ -1,0 +1,38 @@
+- hosts: build
+  become: true
+  tasks:
+    - name: Download gradle
+      get_url:
+       url: https://services.gradle.org/distributions/gradle-4.7-bin.zip
+       dest: ~/
+    - name: install java-{{ java_version }}-openjdk
+      yum:
+       name: java-{{ java_version }}-openjdk
+    - name: create gradle dir
+      file:
+       path: /opt/gradle
+       state: directory
+    - name: ensure zip/unzip packages installed
+      yum:
+       name: "{{ packages }}"
+      vars:
+       packages:
+        - zip
+        - unzip
+    - name: Extract gradle
+      unarchive:
+        src: ~/gradle-4.7-bin.zip
+        dest: /opt/gradle/
+        remote_src: yes
+    - name: Touch a file, /etc/profile.d/gradle.sh
+      file:
+        path: /etc/profile.d/gradle.sh
+        state: touch
+    - name: export
+      shell: echo "export PATH=$PATH:/opt/gradle/gradle-4.7/bin" > /etc/profile.d/gradle.sh
+    - name: Touch a file, /etc/profile.d/gradle.sh change permission to 755
+      file:
+        path: /etc/profile.d/gradle.sh
+        state: touch
+        mode: '0755'
+

@@ -1,0 +1,13 @@
+[jenkin]
+jenkin1
+
+[build]
+build1
+
+# Set variables common for all jenkin hosts
+[jenkin:vars]
+version=2.164.2
+java_version=1.8.0
+
+[build:vars]
+java_version=1.8.0

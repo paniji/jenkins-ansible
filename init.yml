@@ -1,0 +1,29 @@
+- hosts: jenkin
+  become: true
+  tasks:
+    - name: install java-{{ java_version }}-openjdk
+      yum:
+       name: java-{{ java_version }}-openjdk
+    - name: Download jenkins repo
+      get_url:
+       url: http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
+       dest: /etc/yum.repos.d
+    - name: jenkin key
+      become: true
+      shell: rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+      args:
+       warn: no
+    - name: install jenkins
+      yum:
+       name: jenkins-{{ version }}
+    - name: enable jenkins
+      become: true
+      shell: systemctl enable jenkins
+    - name: start jenkins
+      become: true
+      shell: systemctl start jenkins
+    - name: output jenkins status
+      become: true
+      shell: systemctl status jenkins
+      register: output
+    - debug: var=output.stdout_lines
