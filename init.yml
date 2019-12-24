@@ -13,6 +13,13 @@
       shell: rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
       args:
        warn: no
+    - name: ensure zip/unzip packages installed
+      yum:
+       name: "{{ packages }}"
+      vars:
+       packages:
+        - zip
+        - unzip
     - name: install jenkins
       yum:
        name: jenkins-{{ version }}
